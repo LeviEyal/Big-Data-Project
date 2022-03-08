@@ -7,5 +7,18 @@
   "gender": "זכר",
   "city": "אריאל",
   "topic": "הצטרפות לשירות",
-  "product": "אינטרנט"
+  "product": "אינטרנט",
+  "waiting_time": "20"
+}
+
+
+{
+  current_waiting_calls: 23,
+  waiting_times: [2,4,5,2,76,13,35,67,122,46,123,3412,214,346,214],
+  number_of_waiting_calls: [20,30,10,3,78,23,57],
+  calls_per_topic: {
+    join: 20,
+    leave: 30,
+    complaint: 10,
+  }
 }
