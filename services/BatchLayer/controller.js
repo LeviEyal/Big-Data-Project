@@ -1,7 +1,6 @@
-import { MongoClient } from "mongodb";
-import dotenv from "dotenv";
+const MongoClient = require("mongodb").MongoClient;
 
-dotenv.config();
+require("dotenv").config();
 
 const client = new MongoClient(
   process.env.MONGO_DB_URL,
@@ -35,7 +34,7 @@ async function getAll(req, res) {
   }
 }
 
-export default {
+module.exports = {
   insertToMongoDB,
   getAll,
 };
