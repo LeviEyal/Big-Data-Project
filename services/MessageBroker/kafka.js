@@ -17,16 +17,14 @@ const kafkaConf = {
 const topic = process.env.CLOUDKARAFKA_TOPIC;
 const producer = new Kafka.Producer(kafkaConf);
 
-const genMessage = (m) => new Buffer.alloc(m.length, m);
 
-producer.on("ready", (arg) => console.log(`producer ${arg.name} ready.`));
+producer.on("ready", (arg) => console.log(`producer ${arg.name} ready. topic: ${topic}`));
 
 producer.connect();
 
 const publishMessage = (msg) => {
-  const msgString = JSON.stringify(msg);
-  const m = new Buffer.alloc(m.length, m);
-  producer.produce(topic, -1, m, uuid.v4());
+  const m = Buffer.from(JSON.stringify(msg));
+  producer.produce(topic, null, m, uuid.v4()); 
 };
 
 module.exports.publishMessage = publishMessage;
