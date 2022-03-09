@@ -1,22 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Box, Grid, Container, Typography } from '@mui/material';
-import io from "socket.io-client";
+import io from 'socket.io-client';
 // components
 import Page from '../components/Page';
 import {
-  AppTasks,
-  TotalLeaveCalls,
-  AppBugReports,
-  TotalComplaintCalls,
-  AppNewsUpdate,
-  TotalJoinCalls,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
+  CallsCounter,
+  LastCalls,
+  CallsPerTopic,
   AppCurrentSubject,
-  AppConversionRates
+  CallsPerCity,
+  WaitingTimes,
+  CallsPerHour
 } from '../sections/@dashboard/app';
+
+import defaultData from './default_data';
 
 // ----------------------------------------------------------------------
 
@@ -25,21 +22,11 @@ const socket = io('http://localhost:3002', {
 });
 
 export default function DashboardApp() {
-  const [data, setData] = useState({
-    current_waiting_calls: 0,
-    waiting_times: [],
-    number_of_waiting_calls: [],
-    calls_per_topic: {
-      "join": 0,
-      "leave": 0,
-      "complaint": 0,
-    }
-  });
+  const [data, setData] = useState(defaultData);
 
   useEffect(() => {
     socket.on('calls', (data) => {
       setData(data);
-      console.log(data);
     });
   }, []);
 
@@ -52,54 +39,86 @@ export default function DashboardApp() {
         <Grid container spacing={3}>
           {/* number of joining calls */}
           <Grid item xs={12} sm={4} md={2}>
-            <TotalJoinCalls data={data.calls_per_topic.join} />
+            <CallsCounter
+              data={data.calls_per_topic.join}
+              title="מספר שיחות הצטרפות"
+              icon="carbon:user-follow"
+              color='#0f7e00'
+            />
           </Grid>
 
           {/* number of leaving calls */}
           <Grid item xs={12} sm={4} md={2}>
-            <TotalLeaveCalls data={data.calls_per_topic.leave} />
+            <CallsCounter
+              data={data.calls_per_topic.leave}
+              title="מספר שיחות ניתוק"
+              icon="la:user-alt-slash"
+              color='#a50000'
+            />
           </Grid>
 
           {/* number of complaint calls */}
           <Grid item xs={12} sm={4} md={2}>
-            <TotalComplaintCalls data={data.calls_per_topic.complaint} />
+            <CallsCounter
+              data={data.calls_per_topic.complaint}
+              title="מספר שיחות תלונה"
+              icon="carbon:user-simulation"
+              color='#9900ff'
+            />
           </Grid>
 
           {/* number of service calls */}
           <Grid item xs={12} sm={4} md={2}>
-            <TotalComplaintCalls data={data.calls_per_topic.complaint} />
+            <CallsCounter
+              data={data.calls_per_topic.complaint}
+              title="מספר שיחות שירות"
+              icon="ri:customer-service-2-fill"
+              color='#2196f3'
+            />
           </Grid>
 
           {/* Total number of calls */}
           <Grid item xs={12} sm={4} md={4}>
-            <AppBugReports
-              data={data.calls_per_topic.join + data.calls_per_topic.leave + data.calls_per_topic.complaint}
+            <CallsCounter
+              data={
+                data.calls_per_topic.join +
+                data.calls_per_topic.leave +
+                data.calls_per_topic.complaint
+              }
+              title="מספר שיחות כולל"
+              icon="carbon:user-activity"
+              color='#fffc40'
             />
           </Grid>
 
           {/* זמני המתנה מתחילת היום */}
           <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits data={data} />
+            <WaitingTimes data={data.number_of_waiting_calls} />
           </Grid>
 
           {/* פילוח שיחות לפי נושאים */}
           <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits data={Object.values(data.calls_per_topic)} />
+            <CallsPerTopic data={Object.values(data.calls_per_topic)} />
+          </Grid>
+
+          {/* מספר השיחות לפי כל שעה ביום */}
+          <Grid item xs={12} md={6} lg={12}>
+            <CallsPerHour data={data.calls_per_hour} />
           </Grid>
 
           {/* מספר השיחות הממתינות לאורך היום */}
           <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits data={data} />
+            <CallsPerTopic data={data} />
           </Grid>
 
           {/* שיחות אחרונות */}
           <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline />
+            <LastCalls data={data.last_calls}/>
           </Grid>
 
           {/* פילוח לפי ערים */}
           <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates />
+            <CallsPerCity data={data.calls_per_city}/>
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>

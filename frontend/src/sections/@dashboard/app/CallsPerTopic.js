@@ -31,7 +31,7 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AppCurrentVisits({data}) {
+export default function CallsPerTopic({data}) {
   const theme = useTheme();
 
   const chartOptions = merge(BaseOptionChart(), {
@@ -40,7 +40,7 @@ export default function AppCurrentVisits({data}) {
       theme.palette.info.main,
       theme.palette.warning.main,
     ],
-    labels: ["הצטרפות", "ניתוק", "תלונה"],
+    labels: ["הצטרפות", "ניתוק", "תלונה", "שירות"],
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
     dataLabels: { enabled: true, dropShadow: { enabled: false } },

@@ -9,9 +9,9 @@ import { BaseOptionChart } from '../../../components/charts';
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [{ data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380] }];
 
-export default function AppConversionRates() {
+export default function CallsPerCity({data}) {
+  const CHART_DATA = [{ data: Object.values(data) }];
   const chartOptions = merge(BaseOptionChart(), {
     tooltip: {
       marker: { show: false },
@@ -26,18 +26,7 @@ export default function AppConversionRates() {
       bar: { horizontal: true, barHeight: '28%', borderRadius: 2 }
     },
     xaxis: {
-      categories: [
-        'תל אביב',
-        'חיפה',
-        'פתח תקווה',
-        'נתניה',
-        'עכו',
-        'ירושלים',
-        'באר שבע',
-        'עפולה',
-        'אילת',
-        'קריית שמונה'
-      ]
+      categories: Object.keys(data),
     }
   });
 

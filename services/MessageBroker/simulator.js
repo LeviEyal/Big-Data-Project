@@ -1,3 +1,6 @@
+const {faker} = require("@faker-js/faker");
+const _ = require("lodash");
+
 const cities = [
   "Tel Aviv",
   "Haifa",
@@ -11,7 +14,7 @@ const cities = [
   "Rehovot",
 ];
 
-const topics = ["join", "leave", "complaint"];
+const topics = ["join", "leave", "complaint", "service"];
 
 const products = ["אינטרנט", "טלפון", "טלפון נייד"];
 
@@ -35,13 +38,13 @@ const generateCall = () => {
   return {
     start_time: currentTime(),
     end_time: currentTime(),
-    name: "אייל לוי",
-    phone: "0502140955",
+    name: faker.name.findName(),
+    phone: faker.phone.phoneNumber("05#######"),
     age: randomInt(20, 85),
-    gender: genders[randomInt(0, genders.length)],
-    city: cities[randomInt(0, cities.length)],
-    topic: topics[randomInt(0, topics.length)],
-    product: products[randomInt(0, products.length)],
+    gender: _.sample(genders),
+    city: _.sample(cities),
+    topic: _.sample(topics),
+    product: _.sample(products),
     waiting_time: randomInt(5, 100),
     waiting_calls: randomInt(1, 100),
   };

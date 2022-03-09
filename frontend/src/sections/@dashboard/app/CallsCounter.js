@@ -9,7 +9,7 @@ import Iconify from '../../../components/Iconify';
 const RootStyle = styled(Card)(({ theme }) => ({
   boxShadow: 'none',
   textAlign: 'center',
-  padding: theme.spacing(5, 0),
+  padding: theme.spacing(2, 0),
   color: theme.palette.primary.darker,
   backgroundColor: theme.palette.primary.lighter
 }));
@@ -22,25 +22,34 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
   width: theme.spacing(8),
   height: theme.spacing(8),
   justifyContent: 'center',
-  marginBottom: theme.spacing(3),
-  color: theme.palette.primary.dark,
-  backgroundImage: `linear-gradient(135deg, ${alpha(theme.palette.primary.dark, 0)} 0%, ${alpha(
-    theme.palette.primary.dark,
-    0.24
-  )} 100%)`
+  marginBottom: theme.spacing(3)
 }));
 
 // ----------------------------------------------------------------------
 
-export default function TotalJoinCalls({ data }) {
+export default function CallsCounter({ data, color = '#fff', icon, title = 'title' }) {
   return (
-    <RootStyle>
-      <IconWrapperStyle>
-        <Iconify icon="ant-design:android-filled" width={24} height={24} />
+    <RootStyle
+      style={{
+        backgroundImage: `linear-gradient(135deg, ${alpha(color, 0)} 0%, ${alpha(
+          color,
+          0.7
+        )} 100%)`
+      }}
+    >
+      <IconWrapperStyle
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${alpha(color, 0)} 0%, ${alpha(
+            color,
+            0.24
+          )} 100%)`
+        }}
+      >
+        <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
       <Typography variant="h3">{data}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        שיחות הצטרפות מתחילת היום
+        {title}
       </Typography>
     </RootStyle>
   );

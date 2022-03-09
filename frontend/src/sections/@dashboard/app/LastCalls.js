@@ -12,37 +12,6 @@ import {
 } from '@mui/lab';
 // utils
 import { fDateTime } from '../../../utils/formatTime';
-
-// ----------------------------------------------------------------------
-
-const TIMELINES = [
-  {
-    title: '1983, orders, $4220',
-    time: faker.date.past(),
-    type: 'order1'
-  },
-  {
-    title: '12 Invoices have been paid',
-    time: faker.date.past(),
-    type: 'order2'
-  },
-  {
-    title: 'Order #37745 from September',
-    time: faker.date.past(),
-    type: 'order3'
-  },
-  {
-    title: 'New order placed #XF-2356',
-    time: faker.date.past(),
-    type: 'order4'
-  },
-  {
-    title: 'New order placed #XF-2346',
-    time: faker.date.past(),
-    type: 'order5'
-  }
-];
-
 // ----------------------------------------------------------------------
 
 OrderItem.propTypes = {
@@ -51,24 +20,27 @@ OrderItem.propTypes = {
 };
 
 function OrderItem({ item, isLast }) {
-  const { type, title, time } = item;
+  const { type, title, time, phone } = item;
   return (
     <TimelineItem>
       <TimelineSeparator>
         <TimelineDot
           sx={{
             bgcolor:
-              (type === 'order1' && 'primary.main') ||
-              (type === 'order2' && 'success.main') ||
-              (type === 'order3' && 'info.main') ||
-              (type === 'order4' && 'warning.main') ||
+              (type === 'שירות' && 'primary.main') ||
+              (type === 'הצטרפות' && 'success.main') ||
+              (type === 'תלונה' && 'info.main') ||
+              (type === 'ניתוק' && 'warning.main') ||
               'error.main'
           }}
         />
         {isLast ? null : <TimelineConnector />}
       </TimelineSeparator>
+      <TimelineSeparator>
+      <Typography variant="subtitle1" sx={{ padding: 1 }}>{type}</Typography>
+      </TimelineSeparator>
       <TimelineContent>
-        <Typography variant="subtitle2">{title}</Typography>
+        <Typography variant="subtitle2">{title} - {phone}</Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
           {fDateTime(time)}
         </Typography>
@@ -77,7 +49,7 @@ function OrderItem({ item, isLast }) {
   );
 }
 
-export default function AppOrderTimeline() {
+export default function LastCalls({data}) {
   return (
     <Card
       sx={{
@@ -89,8 +61,8 @@ export default function AppOrderTimeline() {
       <CardHeader title="שיחות אחרונות שהתקבלו במערכת" />
       <CardContent>
         <Timeline>
-          {TIMELINES.map((item, index) => (
-            <OrderItem key={item.title} item={item} isLast={index === TIMELINES.length - 1} />
+          {data.map((item, index) => (
+            <OrderItem key={item.title} item={item} isLast={index === data.length - 1} />
           ))}
         </Timeline>
       </CardContent>
