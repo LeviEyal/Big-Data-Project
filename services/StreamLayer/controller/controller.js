@@ -1,4 +1,4 @@
-const db = require("./RedisDB");
+const db = require("../database/RedisDB");
 
 const insertCall = (req, res) => {
   db.redis.hset("myhash", new Date().getTime().toString(), JSON.stringify(req.body.value)).then(

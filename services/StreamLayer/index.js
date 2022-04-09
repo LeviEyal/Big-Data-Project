@@ -1,54 +1,59 @@
 const express = require("express");
 const app = express();
-const http = require('http').Server(app);
-const socket = require("socket.io");
-
-const controller = require("./controller");
-const kafka = require("./Kafka.js");
-const db = require("./RedisDB");
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+const controller = require("./controller/controller");
+const kafkaConsumer = require("./model/Kafka");
+const db = require("./database/RedisDB");
+require("dotenv").config();
+const { processData } = require("./model/CallsProcess");
 
 /* Middlewares */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 /* Routes */
-app
-.get("/", (req, res) => res.send("Stream Service"))
-.post("/api/insertCall", controller.insertCall)
-.get("/api/calls", controller.getAllCalls)
-.get("/api/calls/:key", controller.getCall);
+app.get("/api/calls", controller.getAllCalls)
+    .get("/api/calls/:key", controller.getCall)
+    .post("/api/calls", controller.insertCall);
 
-const io = socket(http);
-
-io.on('connection', async client => {
-  console.log('Client connected to socket');
-  kafka.consumer.on("data", async (message) => {
-    console.log("Message received from Kafka");
-    const new_Call = JSON.parse(message.value);
-    console.log(new_Call);
+    
+/*
+    When the client is connected, then the StreamLayer service
+    emits the current stored calls to the client. 
+*/
+io.on("connection", async (client) => {
+    console.log("Client connected to socket");
     try {
-      const calls_data = await db.redis.json.GET("calls_data");
-
-      calls_data.current_waiting_calls = new_Call.waiting_calls;
-      calls_data.waiting_times.push(new_Call.waiting_time);
-      calls_data.number_of_waiting_calls.push(new_Call.waiting_calls);
-      calls_data.calls_per_topic[new_Call.topic]++;
-      calls_data.calls_per_hour[new_Call.start_time]++;
-
-      await db.redis.json.SET("calls_data", "$", calls_data);
-      client.emit("calls", calls_data); 
+        let calls_data = await db.redis.json.GET("calls_data");
+        io.emit("calls", calls_data);
+        console.log("calls data:", calls_data);
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  });
 });
 
-const callsPerHour = () => {
-  
-}
+/* 
+    Whenever this service is getting new phone calls from kafka,
+    Then it process all the phone calls data required for the dashboard
+    in the frontend tier, and emits it via web socket.
+*/
+kafkaConsumer.on("data", async (message) => {
+    const new_Call = JSON.parse(message.value);
+    try {
+        let calls_data = await db.redis.json.GET("calls_data");
+        calls_data = processData(new_Call, calls_data);
+        await db.redis.json.SET("calls_data", "$", calls_data);
+        await db.redis.json.ARRINSERT("All_calls", "$", 0, new_Call);
+        io.emit("calls", calls_data);
+        io.emit("all_calls", await db.redis.json.GET("All_calls"));
+        console.log("calls data:", calls_data);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 /* Start server */
 const PORT = process.env.PORT || 3002;
-
-http.listen(PORT, () =>
-  console.log(`Stream Service listening at http://localhost:${PORT}`)
+server.listen(PORT, () =>
+    console.log(`Stream Service listening at http://localhost:${PORT}`)
 );
