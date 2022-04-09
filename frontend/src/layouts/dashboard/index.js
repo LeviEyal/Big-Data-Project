@@ -7,8 +7,6 @@ import DashboardSidebar from './DashboardSidebar';
 
 // ----------------------------------------------------------------------
 
-const APP_BAR_MOBILE = 64;
-
 const RootStyle = styled('div')({
   display: 'flex',
   minHeight: '100%',

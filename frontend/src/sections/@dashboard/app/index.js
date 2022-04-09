@@ -1,5 +1,3 @@
-export { default as AppBugReports } from './AppBugReports';
-export { default as AppCurrentSubject } from './AppCurrentSubject';
 export { default as CallsCounter } from './CallsCounter';
 export { default as CallsPerHour } from './CallsPerHour';
 export { default as CallsPerTopic } from './CallsPerTopic';

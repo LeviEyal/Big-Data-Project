@@ -7,7 +7,6 @@ import {
   CallsCounter,
   LastCalls,
   CallsPerTopic,
-  AppCurrentSubject,
   CallsPerCity,
   WaitingTimes,
   CallsPerHour
@@ -17,14 +16,15 @@ import defaultData from './default_data';
 
 // ----------------------------------------------------------------------
 
-const socket = io('http://localhost:3002', {
-  transports: ['websocket', 'polling']
-});
 
 export default function DashboardApp() {
   const [data, setData] = useState(defaultData);
-
+  
   useEffect(() => {
+    const socket = io('http://localhost:3002', {
+      transports: ['websocket', 'polling'],
+      attempts: 2
+    });
     socket.on('calls', (data) => {
       setData(data);
     });
@@ -40,7 +40,7 @@ export default function DashboardApp() {
           {/* number of joining calls */}
           <Grid item xs={12} sm={4} md={2}>
             <CallsCounter
-              data={data.calls_per_topic.join}
+              data={data.calls_per_topic["הצטרפות"]}
               title="מספר שיחות הצטרפות"
               icon="carbon:user-follow"
               color='#0f7e00'
@@ -50,7 +50,7 @@ export default function DashboardApp() {
           {/* number of leaving calls */}
           <Grid item xs={12} sm={4} md={2}>
             <CallsCounter
-              data={data.calls_per_topic.leave}
+              data={data.calls_per_topic["ניתוק"]}
               title="מספר שיחות ניתוק"
               icon="la:user-alt-slash"
               color='#a50000'
@@ -60,7 +60,7 @@ export default function DashboardApp() {
           {/* number of complaint calls */}
           <Grid item xs={12} sm={4} md={2}>
             <CallsCounter
-              data={data.calls_per_topic.complaint}
+              data={data.calls_per_topic["תלונה"]}
               title="מספר שיחות תלונה"
               icon="carbon:user-simulation"
               color='#9900ff'
@@ -70,7 +70,7 @@ export default function DashboardApp() {
           {/* number of service calls */}
           <Grid item xs={12} sm={4} md={2}>
             <CallsCounter
-              data={data.calls_per_topic.complaint}
+              data={data.calls_per_topic["שירות"]}
               title="מספר שיחות שירות"
               icon="ri:customer-service-2-fill"
               color='#2196f3'
@@ -81,9 +81,10 @@ export default function DashboardApp() {
           <Grid item xs={12} sm={4} md={4}>
             <CallsCounter
               data={
-                data.calls_per_topic.join +
-                data.calls_per_topic.leave +
-                data.calls_per_topic.complaint
+                data.calls_per_topic["הצטרפות"] +
+                data.calls_per_topic["ניתוק"] +
+                data.calls_per_topic["תלונה"] +
+                data.calls_per_topic["שירות"]
               }
               title="מספר שיחות כולל"
               icon="carbon:user-activity"
@@ -106,11 +107,6 @@ export default function DashboardApp() {
             <CallsPerHour data={data.calls_per_hour} />
           </Grid>
 
-          {/* מספר השיחות הממתינות לאורך היום */}
-          <Grid item xs={12} md={6} lg={8}>
-            <CallsPerTopic data={data} />
-          </Grid>
-
           {/* שיחות אחרונות */}
           <Grid item xs={12} md={6} lg={4}>
             <LastCalls data={data.last_calls}/>
@@ -119,10 +115,6 @@ export default function DashboardApp() {
           {/* פילוח לפי ערים */}
           <Grid item xs={12} md={6} lg={8}>
             <CallsPerCity data={data.calls_per_city}/>
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject />
           </Grid>
         </Grid>
       </Container>

@@ -13,17 +13,17 @@ const sidebarConfig = [
   },
   {
     title: 'נתוני לקוחות',
-    path: '/dashboard/user',
+    path: '/dashboard/users',
     icon: getIcon('eva:people-fill')
   },
   {
     title: 'לוח הזנת שיחות',
-    path: '/dashboard/blog',
+    path: '/dashboard/answerCalls',
     icon: getIcon('eva:people-fill')
   },
   {
     title: 'אודות',
-    path: '/dashboard/products',
+    path: '/dashboard/about',
     icon: getIcon('eva:shopping-bag-fill')
   },
   
