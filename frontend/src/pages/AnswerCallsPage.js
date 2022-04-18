@@ -24,7 +24,8 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import { UserListHead } from '../sections/@dashboard/user';
 
-import { getCurrentHour } from '../utils/formatTime';
+import { getCurrentHour, formatTime } from '../utils/formatTime';
+import config from '../config';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -42,7 +43,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-const socket = io('http://localhost:3002', {
+const socket = io(config.StreamLayerURL, {
     transports: ['websocket', 'polling'],
     reconnectionAttempts: 2
 });
@@ -84,7 +85,7 @@ export default function AnswerCallsPage() {
 
     const handleToggleAuto = async () => {
         setIsAuto((prev) => !prev);
-        await fetch('http://localhost:3001/api/toggleAutoMode', { method: 'post' });
+        await fetch(`${config.messageBrokerURL}/api/toggleAutoMode`, { method: 'post' });
     };
 
     const handleEndCall = (id) => {
@@ -165,8 +166,8 @@ export default function AnswerCallsPage() {
                                                 dir="rtl"
                                             >
                                                 <TableCell align="right">{row.name}</TableCell>
-                                                <TableCell align="right">{row.start_time}</TableCell>
-                                                <TableCell align="right">{row.end_time}</TableCell>
+                                                <TableCell align="right">{formatTime(row.start_time)}</TableCell>
+                                                <TableCell align="right">{formatTime(row.end_time)}</TableCell>
                                                 <TableCell align="right">{row.phone}</TableCell>
                                                 <TableCell align="right">{row.age}</TableCell>
                                                 <TableCell align="right">{row.gender}</TableCell>

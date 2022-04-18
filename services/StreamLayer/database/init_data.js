@@ -1,13 +1,19 @@
-
-module.exports.initial_data = {
+module.exports = {
     current_waiting_calls: 0,
-    waiting_times: [],
-    number_of_waiting_calls: [],
+    average_waiting_time_per_hour: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    sum_of_waiting_time_per_hour: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    total_calls_per_hour: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
     calls_per_topic: {
-		הצטרפות: 0,
-		ניתוק: 0,
-		תלונה: 0,
-		שירות: 0
+        הצטרפות: 0,
+        ניתוק: 0,
+        תלונה: 0,
+        שירות: 0,
     },
     calls_per_city: {},
     last_calls: [],
@@ -41,4 +47,13 @@ module.exports.initial_data = {
             ],
         },
     ],
+    calls_per_age: {
+        "גיל < 18": 0,
+        "18-25": 0,
+        "26-35": 0,
+        "36-45": 0,
+        "46-55": 0,
+        "56-65": 0,
+        "66+": 0,
+    },
 };

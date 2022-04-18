@@ -8,13 +8,15 @@ const ObjectId = Schema.ObjectId;
 const PhoneCallSchema = new Schema({
   start_time: String,
   end_time: String,
+  duration: Number,
   name: String,
   phone: Number,
   age: Number,
   gender: String,
   city: String,
+  lang: String,
+  product: String,
   topic: String,
-  product: String
 });
 
 const PhoneCallModel = mongoose.model('PhoneCall', PhoneCallSchema );
@@ -22,11 +24,8 @@ const PhoneCallModel = mongoose.model('PhoneCall', PhoneCallSchema );
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
-
 db.once("open", function () {
   console.log("Connected to MongoDB");
 });
 
-module.exports = {
-  PhoneCallModel
-};
+module.exports = PhoneCallModel;

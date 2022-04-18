@@ -15,7 +15,6 @@ app.use(express.json());
 app.get("/api/calls", controller.getAllCalls)
     .get("/api/calls/:key", controller.getCall)
     .post("/api/calls", controller.insertCall);
-
     
 /*
     When the client is connected, then the StreamLayer service
@@ -43,9 +42,9 @@ kafkaConsumer.on("data", async (message) => {
         let calls_data = await db.redis.json.GET("calls_data");
         calls_data = processData(new_Call, calls_data);
         await db.redis.json.SET("calls_data", "$", calls_data);
-        await db.redis.json.ARRINSERT("All_calls", "$", 0, new_Call);
+        // await db.redis.json.ARRINSERT("All_calls", "$", 0, new_Call);
         io.emit("calls", calls_data);
-        io.emit("all_calls", await db.redis.json.GET("All_calls"));
+        // io.emit("all_calls", await db.redis.json.GET("All_calls"));
         console.log("calls data:", calls_data);
     } catch (error) {
         console.log(error);

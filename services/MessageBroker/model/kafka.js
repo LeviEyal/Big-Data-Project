@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 const Kafka = require("node-rdkafka");
-const { kafkaConf } = require("../config/kafka.config");
+const kafkaConf = require("../config/kafka.config");
 require("dotenv").config();
 
 const topic = process.env.CLOUDKARAFKA_TOPIC;
@@ -10,6 +10,7 @@ producer
     .on("ready", (arg) =>
         console.log(`producer ${arg.name} ready. topic: ${topic}`)
     )
+    .on("event", (err) => console.log(err))
     .connect();
 
 const publishMessage = (msg) => {
@@ -18,5 +19,5 @@ const publishMessage = (msg) => {
 };
 
 module.exports = {
-  publishMessage
+    publishMessage,
 };

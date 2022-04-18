@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, TableRow, TableCell, TextField, Typography, MenuItem } from '@mui/material';
 
-import { getCurrentHour } from '../../../utils/formatTime';
+import { formatTime } from '../../../utils/formatTime';
 
 const langs = [
     {
@@ -22,7 +22,7 @@ const langs = [
     }
 ];
 
-export default function NewCall({ handleEndCall, data }) {
+export default function NewCall({ handleEndCall=function(){}, data={} }) {
     const [callData, setCallData] = useState(data);
 
     const handleSubmit = () => {

@@ -1,5 +1,5 @@
-const {faker} = require("@faker-js/faker");
 const _ = require("lodash");
+const names = require("random-names-hebrew")
 
 const cities = [
   "תל אביב",
@@ -33,35 +33,38 @@ const cities = [
 const topics = ["הצטרפות", "ניתוק", "תלונה", "שירות"];
 const products = ["אינטרנט", "טלפון", "טלפון נייד"];
 const genders = ["זכר", "נקבה"];
+const langs = [
+  "עברית",
+  "אנגלית",
+  "ערבית",
+  "צרפתית",
+  "ספרדית",
+  "אמהרית",
+  "רוסית"
+];
 
-const randomInt = (min, max) => {
-  max = max - 1;
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+const ONE_MINUTE = 60 * 1000;
 
-const currentTime = () => {
-  return (
-    new Date().getHours() +
-    ":" +
-    new Date().getMinutes() +
-    ":" +
-    new Date().getSeconds()
-  );
-};
-
+/**
+ * This function generates a random call
+*/
 const generateCall = () => {
+  const start_time = Date.now();
+  const end_time = Date.now() + _.random(ONE_MINUTE * 0.5, ONE_MINUTE * 20, false);
   return {
-    start_time: currentTime(),
-    end_time: currentTime(),
-    name: faker.name.findName(),
-    phone: faker.phone.phoneNumber("05#######"),
-    age: randomInt(20, 85),
+    start_time: start_time,
+    end_time: end_time,
+    duration: (end_time - start_time) / 1000 / 60,
+    name: names.create().fullName,
+    phone: "05" + _.random(10000000, 99999999, false),
+    age: _.random(20, 85, false),
     gender: _.sample(genders),
     city: _.sample(cities),
-    topic: _.sample(topics),
+    lang: _.sample(langs),
     product: _.sample(products),
-    waiting_time: randomInt(5, 100),
-    waiting_calls: randomInt(1, 100),
+    waiting_time: _.random(5, 10, false),
+    waiting_calls: _.random(5, 10, false),
+    topic: _.sample(topics)
   };
 };
 

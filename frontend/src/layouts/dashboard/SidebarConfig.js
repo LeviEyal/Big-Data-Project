@@ -22,6 +22,11 @@ const sidebarConfig = [
     icon: getIcon('eva:people-fill')
   },
   {
+    title: 'חיזוי שיחה',
+    path: '/dashboard/predictCall',
+    icon: getIcon('eva:people-fill')
+  },
+  {
     title: 'אודות',
     path: '/dashboard/about',
     icon: getIcon('eva:shopping-bag-fill')

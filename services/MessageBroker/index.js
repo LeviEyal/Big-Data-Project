@@ -12,12 +12,11 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app
-  .post("/api/sendMessage", controller.sendMessage)
-  .post("/api/toggleAutoMode", controller.toggleAutoMode)
-  .get("api/autoMode", controller.autoMode);
+app.post("/api/sendMessage", controller.sendMessage)
+    .post("/api/toggleAutoMode", controller.toggleAutoMode)
+    .get("api/autoMode", controller.autoMode);
 
 // Start the server
-app.listen(port, () =>
-  console.log(`Message Broker started at http://localhost:${port}`)
-);
+app.listen(port, () => {
+    console.log(`Message Broker started at http://localhost:${port}`);
+});

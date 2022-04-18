@@ -9,10 +9,12 @@ import {
   CallsPerTopic,
   CallsPerCity,
   WaitingTimes,
-  CallsPerHour
+  CallsPerHour,
+  CallsPerAges
 } from '../sections/@dashboard/app';
 
 import defaultData from './default_data';
+import config from '../config';
 
 // ----------------------------------------------------------------------
 
@@ -21,11 +23,13 @@ export default function DashboardApp() {
   const [data, setData] = useState(defaultData);
   
   useEffect(() => {
-    const socket = io('http://localhost:3002', {
+    console.log(config.StreamLayerURL);
+    const socket = io(config.StreamLayerURL, {
       transports: ['websocket', 'polling'],
       attempts: 2
     });
     socket.on('calls', (data) => {
+      console.log(data);
       setData(data);
     });
   }, []);
@@ -94,7 +98,7 @@ export default function DashboardApp() {
 
           {/* זמני המתנה מתחילת היום */}
           <Grid item xs={12} md={6} lg={8}>
-            <WaitingTimes data={data.number_of_waiting_calls} />
+            <WaitingTimes data={data.average_waiting_time_per_hour} />
           </Grid>
 
           {/* פילוח שיחות לפי נושאים */}
@@ -103,9 +107,15 @@ export default function DashboardApp() {
           </Grid>
 
           {/* מספר השיחות לפי כל שעה ביום */}
-          <Grid item xs={12} md={6} lg={12}>
+          <Grid item xs={12} md={6} lg={8}>
             <CallsPerHour data={data.calls_per_hour} />
           </Grid>
+
+          {/* פילוח שיחות לפי גילאים */}
+          <Grid item xs={12} md={6} lg={4}>
+            <CallsPerAges data={Object.values(data.calls_per_age)} />
+          </Grid>
+
 
           {/* שיחות אחרונות */}
           <Grid item xs={12} md={6} lg={4}>
