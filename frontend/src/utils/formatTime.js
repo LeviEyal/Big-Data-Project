@@ -11,15 +11,15 @@ export function fDateTime(date) {
 }
 
 export function formatTime(date) {
-  return format(new Date(date), "hh:mm:ss");
+  return format(new Date(date), "HH:mm:ss");
 }
 
 export function fDateTimeSuffix(date) {
-  return format(new Date(date), 'dd/MM/yyyy hh:mm p');
+  return format(new Date(date), 'dd/MM/yyyy HH:mm:ss');
 }
 
 export function getCurrentHour() {
-  return format(new Date(), "hh:mm:ss")
+  return format(new Date(), "HH:mm:ss")
 }
 
 export function fToNow(date) {

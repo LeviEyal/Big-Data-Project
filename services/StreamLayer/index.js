@@ -2,14 +2,16 @@ const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
+require("dotenv").config();
+
 const controller = require("./controller/controller");
 const kafkaConsumer = require("./model/Kafka");
 const db = require("./database/RedisDB");
-require("dotenv").config();
 const { processData } = require("./model/CallsProcess");
 
 /* Middlewares */
 app.use(express.json());
+app.use(require("cors")());
 
 /* Routes */
 app.get("/api/calls", controller.getAllCalls)
@@ -42,9 +44,10 @@ kafkaConsumer.on("data", async (message) => {
         let calls_data = await db.redis.json.GET("calls_data");
         calls_data = processData(new_Call, calls_data);
         await db.redis.json.SET("calls_data", "$", calls_data);
-        // await db.redis.json.ARRINSERT("All_calls", "$", 0, new_Call);
+        await db.redis.json.ARRINSERT("All_calls", "$", 0, new_Call);
         io.emit("calls", calls_data);
         // io.emit("all_calls", await db.redis.json.GET("All_calls"));
+        io.emit("last_call", new_Call);
         console.log("calls data:", calls_data);
     } catch (error) {
         console.log(error);

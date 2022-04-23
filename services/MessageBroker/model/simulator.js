@@ -52,6 +52,7 @@ const generateCall = () => {
   const start_time = Date.now();
   const end_time = Date.now() + _.random(ONE_MINUTE * 0.5, ONE_MINUTE * 20, false);
   return {
+    id: _.random(100000000, 999999999, false),
     start_time: start_time,
     end_time: end_time,
     duration: (end_time - start_time) / 1000 / 60,

@@ -1,5 +1,5 @@
 // component
-import Iconify from '../../components/Iconify';
+import Iconify from '../../components/general/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -13,23 +13,23 @@ const sidebarConfig = [
   },
   {
     title: 'נתוני לקוחות',
-    path: '/dashboard/users',
+    path: '/dashboard/customers',
     icon: getIcon('eva:people-fill')
   },
   {
     title: 'לוח הזנת שיחות',
     path: '/dashboard/answerCalls',
-    icon: getIcon('eva:people-fill')
+    icon: getIcon('healthicons:call-centre')
   },
   {
     title: 'חיזוי שיחה',
     path: '/dashboard/predictCall',
-    icon: getIcon('eva:people-fill')
+    icon: getIcon('mdi:axis-arrow-info')
   },
   {
     title: 'אודות',
     path: '/dashboard/about',
-    icon: getIcon('eva:shopping-bag-fill')
+    icon: getIcon('akar-icons:info')
   },
   
 ];

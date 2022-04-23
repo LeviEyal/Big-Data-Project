@@ -7,7 +7,6 @@ const kafkaConsumer = require("./model/Kafka");
 const PhoneCallModel = require("./model/PhoneCallModel");
 
 const app = express();
-const PORT = process.env.PORT || 3003;
 
 /* Middlewares */
 app.use(express.json());
@@ -20,7 +19,7 @@ app
   .get("/api/calls", mongoController.getAllCalls)
   .delete("/api/calls", mongoController.deleteAllCalls)
   .get("/api/buildModel", bigmlController.buildModel)
-  .get("/api/predictCall", bigmlController.predictCall);
+  .post("/api/predictCall", bigmlController.predictCall);
 
 /* Kafka */
 kafkaConsumer.on("data", function (message) {
@@ -32,6 +31,7 @@ kafkaConsumer.on("data", function (message) {
 });
 
 /* Start server */
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
   console.log(`Batch Layer listening at http://localhost:${PORT}`);
 });

@@ -9,7 +9,7 @@ const dbName = "test", collectionName = "phonecalls";
 
 const connection = new bigml.BigML();
 const source = new bigml.Source();
-let modelId = "";
+let modelInfo = {};
 
 const makeJsonFile = async () => {
     try {
@@ -19,6 +19,7 @@ const makeJsonFile = async () => {
             .db(dbName)
             .collection(collectionName)
             .find()
+            .limit(1200)
             .toArray();
         client.close();
         const calls = all.map((call) => {
@@ -54,14 +55,14 @@ const buildModel = async (req, res) => {
             dataset.create(sourceInfo, function (error, datasetInfo) {
                 if (!error && datasetInfo) {
                     var model = new bigml.Model();
-                    model.create(datasetInfo, function (error, modelInfo) {
-                        if (!error && modelInfo) {
-                          console.log(modelInfo);
+                    model.create(datasetInfo, function (error, model) {
+                        if (!error && model) {
+                          console.log(model);
                             res.status(200).json({
                                 message: "Model built",
-                                modelInfo: modelInfo.resource,
+                                modelInfo: model,
                             });
-                            modelId = modelInfo.resource;
+                            modelInfo = model;
                         }
                         else {
                             res.status(500).send("Error creating model");
@@ -83,10 +84,21 @@ const buildModel = async (req, res) => {
  * @description Predicts the call using the model
  */
 const predictCall = (req, res) => {
+    console.log("modelInfo", modelInfo);
+    console.log("callToPredict", req.body);
     const callToPredict = req.body;
-    const localModel = new bigml.LocalModel(modelId);
-    localModel.predict(callToPredict, function (error, prediction) {
-        res.status(200).send(prediction);
+    const prediction = new bigml.Prediction();
+    prediction.create(modelInfo, callToPredict, function (error, predictionInfo) {
+        if (!error && predictionInfo) {
+            res.status(200).json({
+                message: "Prediction made",
+                predictionInfo: predictionInfo,
+            });
+            console.log(predictionInfo);
+        }
+        else {
+            res.status(500).send("Error making prediction");
+        }
     });
 };
 
