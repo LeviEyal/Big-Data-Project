@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Button,
     Stack,
@@ -8,22 +8,31 @@ import {
     Stepper,
     Step,
     Box,
-    StepLabel
+    StepLabel,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
 } from "@mui/material";
 import axios from "axios";
 
 import config from "../config";
 import CallEntry from "../components/prediction/CallEntry";
 import Page from "../components/general/Page";
-import { CallsPerTopic } from "../components/charts";
+import { Probabilities } from "../components/charts";
 
 const PREDICTION_URL = `${config.BatchLayerURL}/api/predictCall`;
 const BUILD_MODEL_URL = `${config.BatchLayerURL}/api/buildModel`;
+const GET_MODEL_INFO_URL = `${config.BatchLayerURL}/api/modelInfo`;
 
 export default function PredictionPage() {
     const [building, setBuilding] = useState(false);
+    const [finishBuilding, setFinishBuilding] = useState(false);
     const [isPredicting, setPredicting] = useState(false);
     const [modelName, setModelName] = useState("");
+    const [modelInfo, setModelInfo] = useState({});
+    const [hasModel, setHasModel] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const [prediction, setPrediction] = useState(null);
     const [callData, setCallData] = useState({
@@ -36,21 +45,23 @@ export default function PredictionPage() {
     });
 
     const handleBuildModel = () => {
+        setActiveStep(0);
         setBuilding(true);
         setTimeout(() => {
             setActiveStep(1);
         }, 4000);
-        fetch(BUILD_MODEL_URL)
-            .then((res) => res.json())
+        axios
+            .get(BUILD_MODEL_URL)
             .then((res) => {
                 setBuilding(false);
-                setModelName(res.modelInfo.resource);
+                setModelName(res.data.modelInfo.resource);
                 console.log(res);
             })
             .catch((err) => console.log(err))
             .finally(() => {
                 setBuilding(false);
                 setActiveStep(3);
+                setFinishBuilding(true);
             });
     };
 
@@ -72,6 +83,22 @@ export default function PredictionPage() {
             });
     };
 
+    const fetchModelInfo = async () => {
+        try {
+            const res = await axios.get(GET_MODEL_INFO_URL);
+            console.log(res);
+            setModelName(res.data.modelInfo.resource);
+            setModelInfo(res.data.modelInfo);
+            setHasModel(true);
+        } catch (error) {
+            setModelName("לא נמצא מודל")
+        }
+    };
+
+    useEffect(() => {
+        fetchModelInfo();
+    }, []);
+
     const steps = ["משיג את כל נתוני השיחות", "יוצר קשר עם שרתי BigML", "מודל חיזוי נוצר בהצלחה"];
 
     return (
@@ -85,24 +112,41 @@ export default function PredictionPage() {
                                 <Button disabled>בונה מודל חיזוי...</Button>
                             ) : (
                                 <Button variant="contained" onClick={handleBuildModel}>
-                                    בניית מודל חיזוי
+                                    בניית מודל חיזוי חדש
                                 </Button>
                             )}
-                            {(modelName || building) && (
+                            {(building || finishBuilding) && (
                                 <Box sx={{ width: "100%", margin: "20px" }}>
-                                    <Stepper activeStep={activeStep} >
+                                    <Stepper activeStep={activeStep}>
                                         {steps.map((label) => (
                                             <Step key={label}>
-                                                <StepLabel>{label}</StepLabel>
+                                                <StepLabel>{`>>  ${label}`}</StepLabel>
                                             </Step>
                                         ))}
                                     </Stepper>
                                 </Box>
                             )}
-                            {modelName ? (
+                            {hasModel ? (
                                 <>
-                                    <Typography>שם המודל: {modelName}</Typography>
-                                    <Typography>פרטי המודל:</Typography>
+                                    <Typography variant="h5" mt={5} mb={2}>פרטי מודל החיזוי האחרון שנוצר במערכת</Typography>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center">שם המודל</TableCell>
+                                                <TableCell align="center">מספר השיחות</TableCell>
+                                                <TableCell align="center">גודל</TableCell>
+                                                <TableCell align="center">תאריך יצירה</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell align="center">{modelName}</TableCell>
+                                                <TableCell align="center">{modelInfo.object.rows}</TableCell>
+                                                <TableCell align="center">{`${(modelInfo.object.size/1000).toFixed(2)} KB`}</TableCell>
+                                                <TableCell align="center">{modelInfo.object.created}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
                                 </>
                             ) : (
                                 <Typography>
@@ -117,16 +161,16 @@ export default function PredictionPage() {
                         {isPredicting ? (
                             <Button disabled>מבצע חיזוי...</Button>
                         ) : (
-                            <Button variant="contained" onClick={handlePredictCall}>
+                            <Button disabled={!hasModel} variant="contained" onClick={handlePredictCall}>
                                 חזה נושא שיחה
                             </Button>
                         )}
                     </Container>
                     <Card>
                         {prediction ? (
-                            <CallsPerTopic data={prediction} />
+                            <Probabilities data={prediction} />
                         ) : (
-                            <Typography>No prediction</Typography>
+                            <Typography align="center" my={1}>הזן פרטי שיחה ולחץ על הכפתור מעל כדי לחזות את נושא השיחה</Typography>
                         )}
                     </Card>
                 </Container>

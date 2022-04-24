@@ -18,9 +18,7 @@ export default function About() {
     }, []);
 
     return (
-        <Page title="Dashboard: Products | Minimal-UI">
-            <h1>Hello CodeSandbox</h1>
-            <h2>Start editing to see some magic happen!</h2>
+        <Page title="אודות הפרויקט | CallCenter">
             <section>
                 <article dangerouslySetInnerHTML={{ __html: page }} />
             </section>

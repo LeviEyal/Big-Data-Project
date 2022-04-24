@@ -46,9 +46,7 @@ kafkaConsumer.on("data", async (message) => {
         await db.redis.json.SET("calls_data", "$", calls_data);
         await db.redis.json.ARRINSERT("All_calls", "$", 0, new_Call);
         io.emit("calls", calls_data);
-        // io.emit("all_calls", await db.redis.json.GET("All_calls"));
         io.emit("last_call", new_Call);
-        console.log("calls data:", calls_data);
     } catch (error) {
         console.log(error);
     }

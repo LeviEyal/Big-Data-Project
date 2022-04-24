@@ -52,7 +52,7 @@ const TABLE_HEAD = [
     { id: "gender", label: "מין", alignRight: true },
     { id: "product", label: "מוצר", alignRight: true },
     { id: "lang", label: "שפה", alignRight: true },
-    { id: "topic", label: "נושא", alignRight: true },
+    { id: "topic", label: "נושא", alignRight: true }
 ];
 
 const marks = [
@@ -111,7 +111,7 @@ export default function AnswerCallsPage() {
                 name: "",
                 start_time: Date.now(),
                 end_time: "",
-                phone: faker.phone.phoneNumber("05#-#######"),
+                phone: faker.phone.phoneNumber("05########"),
                 age: "",
                 gender: "זכר",
                 city: "",
@@ -120,7 +120,7 @@ export default function AnswerCallsPage() {
                 topic: "הצטרפות",
                 period
             },
-            ...activeCalls,
+            ...activeCalls
         ]);
         console.log("activeCalls", activeCalls);
     };
@@ -188,19 +188,25 @@ export default function AnswerCallsPage() {
                     <Typography variant="h4" gutterBottom>
                         לוח הזנת שיחות
                     </Typography>
-                    <TextField
-                        value={period}
-                        label="סוג תקופה"
-                        size="small"
-                        select
-                        onChange={(e) => setPeriod(e.target.value)}
-                    >
-                        {PERIODS.map((p) => (
-                            <MenuItem key={p} value={p}>
-                                {p}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    <Stack direction="row">
+                        <TextField label="מספר שיחות ממתינות כרגע" size="small" shrink type="number"/>
+                        <Button variant="contained" color="primary" size="small" mx={2}>
+                            שלח
+                        </Button>
+                        <TextField
+                            value={period}
+                            label="סוג תקופה"
+                            size="small"
+                            select
+                            onChange={(e) => setPeriod(e.target.value)}
+                        >
+                            {PERIODS.map((p) => (
+                                <MenuItem key={p} value={p}>
+                                    {p}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Stack>
                 </Stack>
                 {simulatorRate < 1 ? (
                     <>
@@ -223,7 +229,7 @@ export default function AnswerCallsPage() {
                                 <TableContainer sx={{ minWidth: 300 }}>
                                     <Table>
                                         <TableBody>
-                                        <TableRow>
+                                            <TableRow>
                                                 <TableCell
                                                     align="center"
                                                     colSpan={9}
@@ -282,7 +288,13 @@ export default function AnswerCallsPage() {
                         </Button>
                     </Stack>
                 )}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3} mt={10}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    mb={3}
+                    mt={10}
+                >
                     <Typography variant="h4" gutterBottom>
                         שיחות אחרונות
                     </Typography>
@@ -319,7 +331,9 @@ export default function AnswerCallsPage() {
                                                 <TableCell align="right">
                                                     {formatTime(row.end_time)}
                                                 </TableCell>
-                                                <TableCell align="right">{row.duration.toFixed(2)}</TableCell>
+                                                <TableCell align="right">
+                                                    {row.duration.toFixed(2)}
+                                                </TableCell>
                                                 <TableCell align="right">{row.phone}</TableCell>
                                                 <TableCell align="right">{row.city}</TableCell>
                                                 <TableCell align="right">{row.age}</TableCell>

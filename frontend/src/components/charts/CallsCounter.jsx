@@ -1,6 +1,6 @@
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Card, Typography } from '@mui/material';
+import { Card, Typography, CircularProgress } from '@mui/material';
 // component
 import Iconify from '../general/Iconify';
 
@@ -27,7 +27,7 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function CallsCounter({ data, color = '#fff', icon, title = 'title' }) {
+export default function CallsCounter({ data, color = '#fff', icon, title = 'title', isloaded="false" }) {
   return (
     <RootStyle
       style={{
@@ -47,7 +47,13 @@ export default function CallsCounter({ data, color = '#fff', icon, title = 'titl
       >
         <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{data}</Typography>
+      {
+        isloaded ? (
+          <Typography variant="h3">{data.toLocaleString()}</Typography>
+        ) : (
+          <CircularProgress color='inherit'/>
+        )
+      }
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
       </Typography>

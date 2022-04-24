@@ -5,7 +5,8 @@ const MongoClient = require("mongodb").MongoClient;
 require("dotenv").config();
 
 const client = new MongoClient(process.env.MONGO_DB_URL);
-const dbName = "test", collectionName = "phonecalls";
+const dbName = "test",
+    collectionName = "phonecalls";
 
 const connection = new bigml.BigML();
 const source = new bigml.Source();
@@ -32,7 +33,7 @@ const makeJsonFile = async () => {
                 city: call.city,
                 lang: call.lang,
                 product: call.product,
-                topic: call.topic
+                topic: call.topic,
             };
         });
         await jsonfile.writeFile("./callsData.json", calls, { spaces: 2 });
@@ -57,24 +58,21 @@ const buildModel = async (req, res) => {
                     var model = new bigml.Model();
                     model.create(datasetInfo, function (error, model) {
                         if (!error && model) {
-                          console.log(model);
+                            console.log(model);
                             res.status(200).json({
                                 message: "Model built",
                                 modelInfo: model,
                             });
                             modelInfo = model;
-                        }
-                        else {
+                        } else {
                             res.status(500).send("Error creating model");
                         }
                     });
-                }
-                else {
+                } else {
                     res.status(400).send("Error creating dataset");
                 }
             });
-        }
-        else {
+        } else {
             res.status(400).send("Error creating source");
         }
     });
@@ -88,22 +86,40 @@ const predictCall = (req, res) => {
     console.log("callToPredict", req.body);
     const callToPredict = req.body;
     const prediction = new bigml.Prediction();
-    prediction.create(modelInfo, callToPredict, function (error, predictionInfo) {
-        if (!error && predictionInfo) {
-            res.status(200).json({
-                message: "Prediction made",
-                predictionInfo: predictionInfo,
-            });
-            console.log(predictionInfo);
+    prediction.create(
+        modelInfo,
+        callToPredict,
+        function (error, predictionInfo) {
+            if (!error && predictionInfo) {
+                res.status(200).json({
+                    message: "Prediction made",
+                    predictionInfo: predictionInfo,
+                });
+                console.log(predictionInfo);
+            } else {
+                res.status(500).send("Error making prediction");
+            }
         }
-        else {
-            res.status(500).send("Error making prediction");
-        }
-    });
+    );
 };
 
+/**
+ * @description Gets the model info
+ */
+const getModelInfo = (req, res) => {
+    console.log("gettting model info");
+    if (modelInfo.resource) {
+        res.status(200).json({
+            message: "Model info",
+            modelInfo: modelInfo,
+        });
+    } else {
+        res.status(400).send("Model not built");
+    }
+};
 
 module.exports = {
     buildModel,
-    predictCall
+    predictCall,
+    getModelInfo,
 };

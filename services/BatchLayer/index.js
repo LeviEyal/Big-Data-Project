@@ -19,6 +19,7 @@ app
   .get("/api/calls", mongoController.getAllCalls)
   .delete("/api/calls", mongoController.deleteAllCalls)
   .get("/api/buildModel", bigmlController.buildModel)
+  .get("/api/modelInfo", bigmlController.getModelInfo)
   .post("/api/predictCall", bigmlController.predictCall);
 
 /* Kafka */

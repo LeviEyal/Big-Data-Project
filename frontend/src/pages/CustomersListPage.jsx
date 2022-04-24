@@ -124,6 +124,10 @@ export default function CustomersListPage() {
                     >
                         רענן רשימה
                     </Button>
+                    <Typography variant="h6" gutterBottom>
+                        מספר לקוחות רשומים במערכת:
+                        <Typography align="center">{count.toLocaleString()}</Typography>
+                    </Typography>
                 </Stack>
 
                 <Card>

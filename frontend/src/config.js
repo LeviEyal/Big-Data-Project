@@ -8,7 +8,7 @@ const config =
         : {
               messageBrokerURL: 'https://message-broker-service.herokuapp.com',
               StreamLayerURL: 'https://stream-layer-service.herokuapp.com',
-              BatchLayerURL: process.env.BATCH_LAYER_URL
+              BatchLayerURL: 'https://batch-layer-service.herokuapp.com/'
           };
 
 console.log(config);
